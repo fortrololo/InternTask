@@ -7,4 +7,14 @@ public class LogEntry {
     public String website;
     public long duration;
     public String dateString;
+
+    @Override
+    public String toString() {
+        return "LogEntry{" +
+                "user='" + user + '\'' +
+                ", website='" + website + '\'' +
+                ", duration=" + duration +
+                ", dateString='" + dateString + '\'' +
+                '}';
+    }
 }

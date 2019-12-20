@@ -1,28 +1,7 @@
 package org.example;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.*;
-import java.util.Arrays;
-import java.util.Map;
-
-import static java.nio.file.StandardWatchEventKinds.*;
-
-public class LogMonitor {
-    private String pathString;
-
-    LogMonitor(String pathString) {
-        this.pathString = pathString;
-    }
-
-    public void run() {
-        LogParser parser = new LogParser();
-        Map result = parser.parse(Paths.get(pathString));
-        result.keySet();
-        int a = 1;
-    }
-
-//    public void monitor() {
+public class Directory {
+    //    public void monitor() {
 //        Path path = Paths.get(pathString);
 //        try {
 //            WatchService watcher = FileSystems.getDefault().newWatchService();
@@ -46,5 +25,4 @@ public class LogMonitor {
 //            System.err.println(Arrays.toString(x.getStackTrace()));
 //        }
 //    }
-
 }
