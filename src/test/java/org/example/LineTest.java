@@ -6,14 +6,11 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 class LineTest {
 
     @Test
     void parse_lineContains2DaysLongOperation_2EntriesReturned() {
-        Line line = new Line("1455839970,user1,http://ru.wikipedia.org,100");
-
+        // Expected result
         ArrayList<LogEntry> expectedOutput = new ArrayList<>();
         LogEntry entry1 = new LogEntry();
         entry1.user = "user1";
@@ -29,8 +26,11 @@ class LineTest {
         expectedOutput.add(entry1);
         expectedOutput.add(entry2);
 
+        // Parsing
+        Line line = new Line("1455839970,user1,http://ru.wikipedia.org,100");
         List<LogEntry> list = line.parse();
 
+        // Assertions
         Assertions.assertEquals(2, list.size());
         int numberOfMatches = 0;
         int expectedNumberOfMatches = 2;

@@ -2,9 +2,9 @@ package org.example;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class Line {
@@ -26,48 +26,37 @@ public class Line {
         LocalDateTime startDate = date1.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
         Date date2 = new Date((unixTimestamp+duration)*1000);
         LocalDateTime endDate = date2.toInstant().atZone(ZoneId.of("UTC")).toLocalDateTime();
-        if (startDate.getDayOfMonth() == endDate.getDayOfMonth()) {
-            Duration onFirstDay = Duration.between(startDate, endDate);
-            LogEntry entry = new LogEntry();
-            entry.dateString = startDate.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")).toUpperCase();
-            entry.user = user;
-            entry.duration = onFirstDay.toSeconds();
-            entry.website = website;
-            newEntries.add(entry);
 
-        } else {
-            int count = Period.between(startDate.toLocalDate(), endDate.toLocalDate()).getDays() + 1;
+        Period period = Period.between(startDate.toLocalDate(), endDate.toLocalDate());
 
-            for (int i = 0; i < count; i++) {
-                LocalDateTime dayOfThePeriod = startDate.plusDays(i);
-                if (dayOfThePeriod.getDayOfMonth() != endDate.getDayOfMonth()) {
-                    Temporal dateToCompare = endDate;
-                    LocalDateTime time = LocalDateTime.of(dayOfThePeriod.plusDays(1).toLocalDate(), LocalTime.of(0, 0));
-                    if (time.isBefore(endDate)) {
-                        dateToCompare = time;
-                    }
-                    Duration onCurrentDay = Duration.between(LocalDateTime.of(dayOfThePeriod.toLocalDate(), LocalTime.of(0, 0)), dateToCompare);
-                    LogEntry entry = new LogEntry();
-                    entry.dateString = dayOfThePeriod.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")).toUpperCase();
-                    entry.user = user;
-                    entry.duration = onCurrentDay.toSeconds();
-                    entry.website = website;
-                    if (entry.duration > 0) {
-                        newEntries.add(entry);
-                    }
-                } else {
-                    Duration onCurrentDay = Duration.between(LocalDateTime.of(dayOfThePeriod.toLocalDate(), LocalTime.of(0, 0)), endDate);
-                    LogEntry entry = new LogEntry();
-                    entry.dateString = dayOfThePeriod.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")).toUpperCase();
-                    entry.user = user;
-                    entry.duration = onCurrentDay.toSeconds();
-                    entry.website = website;
-                    if (entry.duration > 0) {
-                        newEntries.add(entry);
-                    }
+        ArrayList<LocalDateTime> checkPoints = new ArrayList<>();
+        checkPoints.add(startDate);
+        for (int i = 1; i <= period.getDays(); i++) {
+            checkPoints.add(startDate.toLocalDate().plusDays(i).atTime(0,0));
+        }
+        checkPoints.add(endDate);
+
+        Iterator<LocalDateTime> iterator = checkPoints.iterator();
+
+        LocalDateTime bufferDateTime = null;
+        while (iterator.hasNext()) {
+            if (bufferDateTime == null) {
+                bufferDateTime = iterator.next();
+            } else {
+                LocalDateTime dateTime = iterator.next();
+                Duration onCurrentDay = Duration.between(bufferDateTime, dateTime);
+                LogEntry entry = new LogEntry();
+                entry.dateString = bufferDateTime.format(DateTimeFormatter.ofPattern("dd-MMM-yyyy")).toUpperCase();
+                entry.user = user;
+                entry.duration = onCurrentDay.toSeconds();
+                entry.website = website;
+                if (entry.duration > 0) {
+                    newEntries.add(entry);
                 }
 
+                bufferDateTime = dateTime;
             }
+
         }
 
         return newEntries;
