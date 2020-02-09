@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.presenters.CsvPresenter;
+import org.example.presenters.Presenter;
+
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
@@ -17,7 +20,7 @@ public class Directory {
 
     public Directory(Path path) {
         this.path = path;
-        this.presenter = new Presenter();
+        this.presenter = new CsvPresenter();
     }
 
     public void monitor() {
@@ -70,18 +73,7 @@ public class Directory {
         public void run() {
             File file = new File(pathToLogFile);
             ArrayList<LogEntry> logEntries = file.parse();
-            presenter.present(logEntries);
-        }
-    }
-
-    private static class Presenter {
-        public synchronized void present(ArrayList<LogEntry> logEntries) {
-            logEntries.forEach((entry) -> {
-
-                System.out.println(entry);
-                System.out.println(entry.toString());
-
-            });
+            presenter.present(file, logEntries);
         }
     }
 }

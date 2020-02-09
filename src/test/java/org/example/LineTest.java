@@ -2,7 +2,6 @@ package org.example;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -53,7 +52,6 @@ class LineTest {
     void parse_lineContains1DayLongOperation_1EntryReturned() {
         Line line = new Line("1455839900,user1,http://ru.wikipedia.org,100");
 
-        ArrayList<LogEntry> expectedOutput = new ArrayList<>();
         LogEntry entry = new LogEntry();
         entry.user = "user1";
         entry.dateString = "18-FEB-2016";

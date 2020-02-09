@@ -10,16 +10,16 @@ import java.util.ArrayList;
 
 public class File {
 
-    Path file;
+    Path path;
 
-    public File(Path file) {
-        this.file = file;
+    public File(Path path) {
+        this.path = path;
     }
 
     public ArrayList<LogEntry> parse() {
         ArrayList<LogEntry> entries = new ArrayList<>();
         try {
-            InputStream in = Files.newInputStream(file);
+            InputStream in = Files.newInputStream(path);
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String lineContent;
             while ((lineContent = reader.readLine()) != null) {
@@ -31,5 +31,9 @@ public class File {
         }
 
         return entries;
+    }
+
+    public Path getPath() {
+        return path;
     }
 }
