@@ -2,12 +2,15 @@ package org.example.presenters;
 
 import org.example.File;
 import org.example.LogEntry;
+
 import java.io.BufferedWriter;
 import java.io.IOException;
+
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -21,7 +24,7 @@ public class CsvPresenter implements Presenter {
         String logFileName = file.getPath().getFileName().toString();
         Path path = Paths.get("src/main/resources/avg_" + logFileName);
         try(BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)){
-            // using for-each loop for iteration over Map.entrySet(), replace by stream API
+            // todo: replace by stream API
             for (Map.Entry<String,ArrayList<LogEntry>> entry : groupedByDate.entrySet())
             {
                 entry.getValue().sort(new CsvPresenter.LogEntryComparator());

@@ -23,7 +23,18 @@ public class Directory {
         this.presenter = new CsvPresenter();
     }
 
+    // TODO: add threads pool
+    // TODO: check only csv files
+    // TODO: validate file structure
     public void monitor() {
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.path)) {
+            for (Path file: stream) {
+                this.handle(file);
+            }
+        } catch (IOException | DirectoryIteratorException x) {
+            System.err.println(x);
+        }
+
         try {
             WatchService watcher = FileSystems.getDefault().newWatchService();
 
