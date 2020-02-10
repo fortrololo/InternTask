@@ -7,6 +7,8 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import static java.nio.file.StandardWatchEventKinds.*;
 
@@ -17,13 +19,14 @@ import static java.nio.file.StandardWatchEventKinds.*;
 public class Directory {
     private final Path path;
     private final Presenter presenter;
+    private final ThreadPoolExecutor executor;
 
     public Directory(Path path) {
         this.path = path;
         this.presenter = new CsvPresenter();
+        this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
     }
 
-    // TODO: add threads pool
     // TODO: validate file structure
     public void monitor() {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.path)) {
@@ -61,31 +64,14 @@ public class Directory {
         }
     }
 
-    // Just draft method to give an idea how to handle files in different threads.
-    // Most probably I will rethink this as replace the implementation by a Thread pool.
     private void handle(Path pathToLogFile) {
-        Runnable handler = new Handler(pathToLogFile, presenter);
-        Thread t = new Thread(handler);
-        t.start();
-    }
-
-    private static class Handler implements Runnable {
-
-        protected Path pathToLogFile;
-        protected Presenter presenter;
-
-        public Handler(Path pathToLogFile, Presenter presenter) {
-            this.pathToLogFile = pathToLogFile;
-            this.presenter = presenter;
-        }
-
-        @Override
-        public void run() {
-            if (pathToLogFile.endsWith("csv")) {
+        this.executor.submit(() -> {
+            if (pathToLogFile.toString().toLowerCase().endsWith("csv")) {
                 File file = new File(pathToLogFile);
                 ArrayList<LogEntry> logEntries = file.parse();
+
                 presenter.present(file, logEntries);
             }
-        }
+        });
     }
 }
