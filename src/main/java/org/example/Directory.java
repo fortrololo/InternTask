@@ -24,7 +24,6 @@ public class Directory {
     }
 
     // TODO: add threads pool
-    // TODO: check only csv files
     // TODO: validate file structure
     public void monitor() {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.path)) {
@@ -82,9 +81,11 @@ public class Directory {
 
         @Override
         public void run() {
-            File file = new File(pathToLogFile);
-            ArrayList<LogEntry> logEntries = file.parse();
-            presenter.present(file, logEntries);
+            if (pathToLogFile.endsWith("csv")) {
+                File file = new File(pathToLogFile);
+                ArrayList<LogEntry> logEntries = file.parse();
+                presenter.present(file, logEntries);
+            }
         }
     }
 }
