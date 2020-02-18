@@ -9,8 +9,11 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 
 public class File {
-
     Path path;
+
+    public Path getPath() {
+        return path;
+    }
 
     public File(Path path) {
         this.path = path;
@@ -18,8 +21,7 @@ public class File {
 
     public ArrayList<LogEntry> parse() {
         ArrayList<LogEntry> entries = new ArrayList<>();
-        try {
-            InputStream in = Files.newInputStream(path);
+        try(InputStream in = Files.newInputStream(path)) {
             BufferedReader reader = new BufferedReader(new InputStreamReader(in));
             String lineContent;
             while ((lineContent = reader.readLine()) != null) {
@@ -28,12 +30,10 @@ public class File {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (Exception e) {
+            System.err.println("Failed to parse file " + path.toString() + ' ' + e.getMessage());
         }
 
         return entries;
-    }
-
-    public Path getPath() {
-        return path;
     }
 }

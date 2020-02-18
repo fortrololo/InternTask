@@ -8,7 +8,7 @@ import java.util.List;
 class LineTest {
 
     @Test
-    void parse_lineContains2DaysLongOperation_2EntriesReturned() {
+    void parse_lineContains2DaysLongOperation_2EntriesReturned() throws Exception {
         // Expected result
         ArrayList<LogEntry> expectedOutput = new ArrayList<>();
         LogEntry entry1 = new LogEntry();
@@ -49,7 +49,7 @@ class LineTest {
     }
 
     @Test
-    void parse_lineContains1DayLongOperation_1EntryReturned() {
+    void parse_lineContains1DayLongOperation_1EntryReturned() throws Exception {
         Line line = new Line("1455839900,user1,http://ru.wikipedia.org,100");
 
         LogEntry entry = new LogEntry();
@@ -68,7 +68,7 @@ class LineTest {
     }
 
     @Test
-    void parse_lineContains3DaysLongOperation_3EntriesReturned() {
+    void parse_lineContains3DaysLongOperation_3EntriesReturned() throws Exception {
         Line line = new Line("1455839970,user1,http://ru.wikipedia.org,86490");
 
         ArrayList<LogEntry> expectedOutput = new ArrayList<>();

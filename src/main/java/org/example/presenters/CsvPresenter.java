@@ -17,12 +17,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CsvPresenter implements Presenter {
+    private final Path outputDir;
+
+    public CsvPresenter(Path outputDir) {
+        this.outputDir = outputDir;
+    }
 
     public void present(File file, ArrayList<LogEntry> entries) {
         HashMap<String, ArrayList<LogEntry>> groupedByDate = (HashMap<String, ArrayList<LogEntry>>) groupByDate(entries);
 
         String logFileName = file.getPath().getFileName().toString();
-        Path path = Paths.get("src/main/resources/avg_" + logFileName);
+        Path path = Paths.get(outputDir.toString() + java.io.File.separator + "avg_" + logFileName);
         try(BufferedWriter writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8)){
             // todo: replace by stream API
             for (Map.Entry<String,ArrayList<LogEntry>> entry : groupedByDate.entrySet())
@@ -58,6 +63,7 @@ public class CsvPresenter implements Presenter {
         @Override
         public int compare(LogEntry o1, LogEntry o2) {
             int id1, id2;
+            // 4 - count of letter is "user" word
             id1 = Integer.parseInt(o1.user.substring(4));
             id2 = Integer.parseInt(o2.user.substring(4));
 

@@ -1,13 +1,10 @@
 package org.example;
 
-import org.example.presenters.CsvPresenter;
 import org.example.presenters.Presenter;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
 import static java.nio.file.StandardWatchEventKinds.*;
@@ -21,13 +18,12 @@ public class Directory {
     private final Presenter presenter;
     private final ThreadPoolExecutor executor;
 
-    public Directory(Path path) {
+    public Directory(Path path, Presenter presenter, ThreadPoolExecutor threadPoolExecutor) {
         this.path = path;
-        this.presenter = new CsvPresenter();
-        this.executor = (ThreadPoolExecutor) Executors.newFixedThreadPool(10);
+        this.presenter = presenter;
+        this.executor = threadPoolExecutor;
     }
 
-    // TODO: validate file structure
     public void monitor() {
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(this.path)) {
             for (Path file: stream) {
@@ -52,9 +48,6 @@ public class Directory {
                         Path pathToLogFile = Paths.get(this.path.toString() + java.io.File.separator + event.context());
                         this.handle(pathToLogFile);
                     }
-                    System.out.println(
-                            "Event kind:" + event.kind()
-                                    + ". File affected: " + event.context() + ".");
                 }
                 key.reset();
             }
